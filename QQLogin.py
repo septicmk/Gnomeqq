@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-
-# Code by Yinzo:        https://github.com/Yinzo
-# Origin repository:    https://github.com/Yinzo/SmartQQBot
-
 import random
 import time
 import datetime
@@ -14,6 +10,7 @@ from Configs import *
 from Msg import *
 from Notify import *
 from HttpClient import *
+from Gnome import *
 
 logging.basicConfig(
     filename='smartqq.log',
@@ -74,11 +71,16 @@ class QQ:
 
         error_times = 0
         ret = []
+        win = 0
         while True:
             error_times += 1
             self.req.Download('https://ssl.ptlogin2.qq.com/ptqrshow?appid={0}&e=0&l=L&s=8&d=72&v=4'.format(appid),
                               self.qrcode_path)
             logging.info("Please scan the downloaded QRCode")
+            # add pop up img
+            win = Win()
+            X(win).start()
+            logging.debug("openwindow")
 
             while True:
                 html = self.req.Get(
@@ -89,9 +91,10 @@ class QQ:
                 ret = html.split("'")
                 if ret[1] in ('0', '65'):  # 65: QRCode 失效, 0: 验证成功, 66: 未失效, 67: 验证中
                     break
+            win.close()
+            logging.debug("close window")
             if ret[1] == '0' or error_times > 10:
                 break
-
         if ret[1] != '0':
             return
         logging.info("QRCode scaned, now logging in.")
@@ -139,6 +142,7 @@ class QQ:
         self.account = ret['result']['uin']
 
         logging.info("QQ：{0} login successfully, Username：{1}".format(self.account, self.username))
+
 
     def relogin(self, error_times=0):
         if error_times >= 10:
@@ -255,6 +259,10 @@ class QQ:
 
         elif isinstance(msg, GroupMsg):
             return str(msg.info_seq).join("[]") + str(self.uin_to_account(msg.send_uin))
+
+    def get_dict(self):
+        dic = {}
+        return dic
 
     def uin_to_account(self, tuin):
         uin_str = str(tuin)

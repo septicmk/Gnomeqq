@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# Code by Yinzo:        https://github.com/Yinzo
-# Origin repository:    https://github.com/Yinzo/SmartQQBot
-
 import threading
 
 from QQLogin import *
@@ -30,9 +27,7 @@ class Sess(threading.Thread):
         self.private_config = SessConfig(self)
         self.config = self.global_config
         self.update_config()
-        self.process_order = [
-            "callout",
-        ]
+        self.process_order = []
         logging.info(str(self.tid) + "临时聊天已激活, 当前执行顺序： " + str(self.process_order))
 
     def update_config(self):

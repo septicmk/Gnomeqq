@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 
-# Code by Yinzo:        https://github.com/Yinzo
-# Origin repository:    https://github.com/Yinzo/SmartQQBot
-
 import threading
 
 from QQLogin import *
 from Configs import *
 from Msg import *
 from HttpClient import *
+import time
 
 
 class Pm(threading.Thread):
@@ -27,13 +25,8 @@ class Pm(threading.Thread):
         self.global_config = DefaultConfigs()
         self.private_config = PmConfig(self)
         self.update_config()
-        self.process_order = [
-            "command_0arg",
-            "command_1arg",
-            "repeat",
-            "callout",
-        ]
-        logging.info(str(self.tid) + "私聊已激活, 当前执行顺序： " + str(self.process_order))
+        self.process_order = []
+        logging.info(str(self.tid) + "Pm start ... ")
 
     def update_config(self):
         use_private_config = bool(self.private_config.conf.getint("pm", "use_private_config"))
@@ -87,34 +80,9 @@ class Pm(threading.Thread):
                 return False
 
     def callout(self, msg):
-        if "智障机器人" in msg.content:
+        if "hello" in msg.content:
             logging.info(str(self.tid) + " calling me out, trying to reply....")
-            self.reply("干嘛（‘·д·）")
+            self.reply("嗯？")
             return True
         return False
 
-    def repeat(self, msg):
-        if len(self.msg_list) > 0 and self.msg_list[-1].content == msg.content:
-            if str(msg.content).strip() not in ("", " ", "[图片]", "[表情]"):
-                logging.info(str(self.tid) + " repeating, trying to reply " + str(msg.content))
-                self.reply(msg.content)
-                return True
-        return False
-
-    def command_0arg(self, msg):
-        # webqq接受的消息会以空格结尾
-        match = re.match(r'^(?:!|！)([^\s\{\}]+)\s*$', msg.content)
-        if match:
-            command = str(match.group(1))
-            logging.info("command format detected, command: " + command)
-
-        return False
-
-    def command_1arg(self, msg):
-        match = re.match(r'^(?:!|！)([^\s\{\}]+)(?:\s?)\{([^\s\{\}]+)\}\s*$', msg.content)
-        if match:
-            command = str(match.group(1))
-            arg1 = str(match.group(2))
-            logging.info("command format detected, command:{0}, arg1:{1}".format(command, arg1))
-
-        return False

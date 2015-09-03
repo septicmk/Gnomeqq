@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
-
-# Code by Yinzo:        https://github.com/Yinzo
-# Origin repository:    https://github.com/Yinzo/SmartQQBot
-
 from Group import *
 from Pm import *
 from Sess import *
+from Gnome import *
 
 logging.basicConfig(
     filename='smartqq.log',
@@ -48,6 +45,13 @@ class MsgHandler:
                     # 若如上一条seq重复则抛弃此条信息不处理
                     logging.info("消息重复，抛弃")
                     return
+                
+                qq_id = self.__operator.get_account(msg)
+                dic = self.__operator.get_dict()
+                who = dic.get(qq_id, qq_id)
+                txt = msg.content
+                Not(str(who), str(txt)).start()
+
                 tgt_group.msg_id = msg.msg_id
                 self.__group_list[msg.info_seq].handle(msg)
                 tgt_group.msg_list.append(msg)
@@ -66,6 +70,13 @@ class MsgHandler:
                     # 私聊没有seq可用于判断重复，只能抛弃同一个人在同一时间戳发出的内容相同的消息。
                     logging.info("消息重复，抛弃")
                     return
+
+                qq_id = self.__operator.get_account(msg)
+                dic = self.__operator.get_dict()
+                who = dic.get(str(qq_id), qq_id)
+                txt = msg.content
+                Not(str(who), str(txt)).start()
+                
                 tgt_pm.msg_id = msg.msg_id
                 self.__pm_list[tid].handle(msg)
                 tgt_pm.msg_list.append(msg)
@@ -84,6 +95,12 @@ class MsgHandler:
                     # 私聊没有seq可用于判断重复，只能抛弃同一个人在同一时间戳发出的同一内容的消息。
                     logging.info("消息重复，抛弃")
                     return
+                qq_id = self.__operator.get_account(msg)
+                dic = self.__operator.get_dict()
+                who = dic.get(qq_id, qq_id)
+                txt = msg.content
+                Not(str(who), str(txt)).start()
+
                 tgt_sess.msg_id = msg.msg_id
                 self.__sess_list[tid].handle(msg)
                 tgt_sess.msg_list.append(msg)

@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# Code by Yinzo:        https://github.com/Yinzo
-# Origin repository:    https://github.com/Yinzo/SmartQQBot
-
 import cPickle
 import threading
 
@@ -40,14 +37,7 @@ class Group(threading.Thread):
         self.global_config = DefaultConfigs()
         self.private_config = GroupConfig(self)
         self.update_config()
-        self.process_order = [
-            "follow",
-            "repeat",
-            "callout",
-            "command_0arg",
-            "command_1arg",
-            "tucao",
-        ]
+        self.process_order = []
         logging.info(str(self.gid) + "群已激活, 当前执行顺序： " + str(self.process_order))
         self.tucao_load()
 
