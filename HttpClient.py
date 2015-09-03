@@ -1,5 +1,5 @@
 import cookielib, urllib, urllib2, socket
-
+ 
 class HttpClient:
   __cookie = cookielib.CookieJar()
   __req = urllib2.build_opener(urllib2.HTTPCookieProcessor(__cookie))
